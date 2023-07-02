@@ -6,8 +6,16 @@ const router = Router<Request & IRequest>()
 
 
 import index from './templates/httpbin.1.html';
+import formPost from './templates/forms-post.html';
 import moby from './templates/moby.html';
 import utf8demo from './templates/UTF-8-demo.txt';
+
+import sample_xml from './templates/sample.xml'
+
+import image_png from './images/pig_icon.png';
+import image_jpeg from './images/jackal.jpg';
+import image_webp from './images/wolf_1.webp';
+import image_svg from './images/svg_logo.svg';
 
 import { renderTemplate, renderJSON, robots_txt, renderText, getDict, renderCompressedJSON, statusCode, redirect } from './helpers';
 
@@ -44,6 +52,10 @@ router.get("/legacy", () => {
 
 router.get("/html", () => {
 	return renderTemplate(moby);
+});
+
+router.get("/forms/post", () => {
+	return renderTemplate(formPost);
 });
 
 router.get("/robots.txt", () => {
@@ -271,6 +283,64 @@ router.get("/cookies/delete", (req) => {
 	return new Response("", {
 		status: 302,
 		headers: hdr,
+	});
+});
+
+router.get("/image", (req) => {
+	const accept = req.headers.get("accept") ?? "image/png";
+
+	if (accept.includes("image/webp")) {
+		return new Response(image_webp, { headers: { "Content-Type": "image/webp" } });
+	}
+	if (accept.includes("image/svg+xml")) {
+		return new Response(image_svg, { headers: { "Content-Type": "image/svg+xml" } });
+	}
+	if (accept.includes("image/jpeg")) {
+		return new Response(image_jpeg, { headers: { "Content-Type": "image/jpeg" } });
+	}
+	if (accept.includes("image/png") || accept.includes("images/*")) {
+		return new Response(image_png, { headers: { "Content-Type": "image/png" } });
+	}
+
+	return statusCode(406);
+});
+
+router.get("/image/png", (req) => {
+	return new Response(image_png, { headers: { "Content-Type": "image/png" } });
+});
+router.get("/image/jpeg", (req) => {
+	return new Response(image_jpeg, { headers: { "Content-Type": "image/jpeg" } });
+});
+router.get("/image/webp", (req) => {
+	return new Response(image_webp, { headers: { "Content-Type": "image/webp" } });
+});
+router.get("/image/svg", (req) => {
+	return new Response(image_svg, { headers: { "Content-Type": "image/svg+xml" } });
+});
+
+
+router.get("/xml", (req) => {
+	return new Response(sample_xml, { headers: { "Content-Type": "application/xml" } });
+});
+
+router.get("/json", (req) => {
+	return renderJSON({
+		"slideshow": {
+			"title": "Sample Slide Show",
+			"date": "date of publication",
+			"author": "Yours Truly",
+			"slides": [
+				{ "type": "all", "title": "Wake up to WonderWidgets!" },
+				{
+					"type": "all",
+					"title": "Overview",
+					"items": [
+						"Why <em>WonderWidgets</em> are great",
+						"Who <em>buys</em> WonderWidgets",
+					],
+				},
+			],
+		}
 	});
 });
 

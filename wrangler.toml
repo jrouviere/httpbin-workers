@@ -1,3 +1,13 @@
 name = "httpbin-workers"
 main = "src/worker.ts"
 compatibility_date = "2023-07-01"
+
+rules = [
+  { type = "Text", globs = ["**/*.html"], fallthrough = true },
+  { type = "Text", globs = ["**/*.xml"], fallthrough = true },
+  { type = "Text", globs = ["**/*.txt"], fallthrough = true },
+  { type = "Data", globs = ["**/*.png"], fallthrough = true },
+  { type = "Data", globs = ["**/*.jpg"], fallthrough = true },
+  { type = "Data", globs = ["**/*.svg"], fallthrough = true },
+  { type = "Data", globs = ["**/*.webp"], fallthrough = true }
+]
